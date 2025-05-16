@@ -1,0 +1,107 @@
+@model FilmOnerme.Models.Appointment
+@{
+    ViewData["Title"] = "Randevu Oluştur";
+}
+
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <div style="background-color: #1c1c1c; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); overflow: hidden;">
+        <div style="padding: 20px; border-bottom: 2px solid #FFD700;">
+            <h2 style="margin: 0; font-size: 1.8rem; color: #FFD700;">Yeni Randevu Oluştur</h2>
+        </div>
+
+        <form asp-action="Create" method="post" style="padding: 30px;">
+            <input type="hidden" asp-for="KullaniciAdi" value="@User.Identity.Name" />
+            
+            @if (ViewData["FilmId"] != null)
+            {
+                <input type="hidden" asp-for="FilmId" value="@ViewData["FilmId"]" />
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; color: #FFD700; margin-bottom: 8px; font-weight: 500;">Film</label>
+                    <div style="color: #fff; padding: 10px; background-color: rgba(255,255,255,0.1); border-radius: 5px;">
+                        @ViewData["FilmAdi"]
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div style="margin-bottom: 20px;">
+                    <label asp-for="FilmId" style="display: block; color: #FFD700; margin-bottom: 8px; font-weight: 500;">Film Seç</label>
+                    <select asp-for="FilmId" asp-items="ViewBag.FilmList" style="
+                        width: 100%;
+                        padding: 10px;
+                        border: 1px solid #FFD700;
+                        background-color: #1c1c1c;
+                        color: #fff;
+                        border-radius: 5px;
+                        outline: none;">
+                    </select>
+                    <span asp-validation-for="FilmId" style="color: #dc3545; font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+                </div>
+            }
+
+            <div style="margin-bottom: 20px;">
+                <label asp-for="Tarih" style="display: block; color: #FFD700; margin-bottom: 8px; font-weight: 500;">Randevu Tarihi ve Saati</label>
+                <input asp-for="Tarih" type="datetime-local" style="
+                    width: 100%;
+                    padding: 10px;
+                    border: 1px solid #FFD700;
+                    background-color: #1c1c1c;
+                    color: #fff;
+                    border-radius: 5px;
+                    outline: none;" />
+                <span asp-validation-for="Tarih" style="color: #dc3545; font-size: 0.875rem; margin-top: 5px; display: block;"></span>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 30px;">
+                <button type="submit" style="
+                    background-color: #FFD700;
+                    color: #1c1c1c;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    transition: all 0.3s;">
+                    <i class="fas fa-calendar-check"></i> Randevu Oluştur
+                </button>
+                <a href="javascript:history.back()" style="
+                    background-color: #6c757d;
+                    color: #fff;
+                    text-decoration: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    font-size: 0.9rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    transition: all 0.3s;">
+                    <i class="fas fa-arrow-left"></i> Geri Dön
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            // Input focus effect
+            $('input, select').focus(function() {
+                $(this).css('border-color', '#ffd700');
+            }).blur(function() {
+                $(this).css('border-color', '#FFD700');
+            });
+
+            // Button hover effect
+            $('button, a').hover(
+                function() { $(this).css('opacity', '0.8'); },
+                function() { $(this).css('opacity', '1'); }
+            );
+        });
+    </script>
+}

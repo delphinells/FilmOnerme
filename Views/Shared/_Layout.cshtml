@@ -1,0 +1,296 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FilmOnerme</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FilmOnerme.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .fixed-top {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 1030;
+        }
+        body {
+            padding-top: 70px;
+        }
+        .profile-dropdown {
+            position: relative;
+        }
+        .profile-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: #1c1c1c;
+            border: 1px solid #FFD700;
+            border-radius: 5px;
+            margin-top: 10px;
+            min-width: 220px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1031;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .profile-menu.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .profile-menu-item {
+            display: block;
+            color: #FFD700;
+            text-decoration: none;
+            padding: 12px 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            border: none;
+            background: none;
+            font-size: 1rem;
+        }
+        .profile-menu-item:hover {
+            background-color: rgba(255, 215, 0, 0.1);
+            color: #FFD700;
+        }
+        .profile-menu-item:focus {
+            outline: none;
+            background-color: rgba(255, 215, 0, 0.15);
+        }
+        .profile-button {
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #FFD700;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .profile-button:hover, .profile-button:focus {
+            background-color: rgba(255, 215, 0, 0.1);
+            outline: none;
+        }
+        .profile-button[aria-expanded="true"] {
+            background-color: rgba(255, 215, 0, 0.1);
+        }
+    </style>
+</head>
+<body style="background-color: #f8f9fa;">
+    <header class="fixed-top">
+        <nav style="background-color: #1c1c1c; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="max-width: 1200px; margin: 0 auto; padding: 15px 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 40px;">
+                        <a href="@Url.Action("Index", "Home")" style="
+                            color: #FFD700;
+                            text-decoration: none;
+                            font-size: 1.5rem;
+                            font-weight: bold;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;">
+                            <i class="fas fa-film"></i>
+                            FilmÖnerme
+                        </a>
+                        <div style="display: flex; gap: 20px;">
+                            <a href="@Url.Action("Index", "Home")" style="
+                                color: #FFD700;
+                                text-decoration: none;
+                                font-weight: 500;
+                                transition: all 0.3s;
+                                display: flex;
+                                align-items: center;
+                                gap: 5px;">
+                                <i class="fas fa-home"></i> Ana Sayfa
+                            </a>
+                            <a href="@Url.Action("Index", "Film")" style="
+                                color: #FFD700;
+                                text-decoration: none;
+                                font-weight: 500;
+                                transition: all 0.3s;
+                                display: flex;
+                                align-items: center;
+                                gap: 5px;">
+                                <i class="fas fa-video"></i> Filmler
+                            </a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a href="@Url.Action("Appointments", "Film")" style="
+                                    color: #FFD700;
+                                    text-decoration: none;
+                                    font-weight: 500;
+                                    transition: all 0.3s;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 5px;">
+                                    <i class="fas fa-calendar"></i> Tüm Randevular
+                                </a>
+                            }
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <partial name="_LoginPartial" />
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <div class="profile-dropdown">
+                                <button type="button" class="profile-button" 
+                                        onclick="toggleProfileMenu(this)" 
+                                        aria-haspopup="true" 
+                                        aria-expanded="false"
+                                        aria-controls="profileMenu">
+                                    <div style="
+                                        width: 40px;
+                                        height: 40px;
+                                        background-color: #FFD700;
+                                        border-radius: 50%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;">
+                                        <i class="fas fa-user" style="color: #1c1c1c;"></i>
+                                    </div>
+                                    <span>@User.Identity.Name</span>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <span style="font-size: 0.8rem; background-color: #FFD700; color: #1c1c1c; padding: 2px 6px; border-radius: 10px;">Admin</span>
+                                    }
+                                </button>
+                                <div id="profileMenu" class="profile-menu">
+                                    <a class="profile-menu-item" href="@Url.Action("Index", "Profile")">
+                                        <i class="fas fa-user-circle"></i>
+                                        <span style="margin-left: 10px;">Profilim</span>
+                                    </a>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a class="profile-menu-item" href="@Url.Action("Appointments", "Film")">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            <span style="margin-left: 10px;">Tüm Randevular</span>
+                                        </a>
+                                    }
+                                    <a class="profile-menu-item" href="@Url.Action("Index", "Appointment")">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span style="margin-left: 10px;">Randevularım</span>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer style="background-color: #1c1c1c; color: #FFD700; padding: 20px 0; margin-top: 40px;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; text-align: center;">
+            <p style="margin: 0;">
+                &copy; @DateTime.Now.Year - FilmÖnerme - 
+                <a href="@Url.Action("Privacy", "Home")" style="color: #FFD700; text-decoration: none; transition: all 0.3s;">
+                    Gizlilik
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        function toggleProfileMenu(button) {
+            const menu = document.getElementById('profileMenu');
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            
+            button.setAttribute('aria-expanded', !isExpanded);
+            menu.classList.toggle('show');
+
+            // Focus first menu item when opening
+            if (!isExpanded) {
+                setTimeout(() => {
+                    const firstItem = menu.querySelector('.profile-menu-item');
+                    if (firstItem) firstItem.focus();
+                }, 100);
+            }
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.profile-dropdown');
+            const menu = document.getElementById('profileMenu');
+            const button = dropdown.querySelector('.profile-button');
+            
+            if (!dropdown.contains(event.target)) {
+                menu.classList.remove('show');
+                button.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Close menu on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const menu = document.getElementById('profileMenu');
+                const button = document.querySelector('.profile-button');
+                menu.classList.remove('show');
+                button.setAttribute('aria-expanded', 'false');
+                button.focus();
+            }
+        });
+
+        // Handle keyboard navigation within menu
+        document.getElementById('profileMenu').addEventListener('keydown', function(event) {
+            const items = Array.from(this.querySelectorAll('.profile-menu-item'));
+            const currentIndex = items.indexOf(document.activeElement);
+            
+            switch(event.key) {
+                case 'ArrowDown':
+                    event.preventDefault();
+                    if (currentIndex < items.length - 1) {
+                        items[currentIndex + 1].focus();
+                    }
+                    break;
+                case 'ArrowUp':
+                    event.preventDefault();
+                    if (currentIndex > 0) {
+                        items[currentIndex - 1].focus();
+                    }
+                    break;
+                case 'Home':
+                    event.preventDefault();
+                    items[0].focus();
+                    break;
+                case 'End':
+                    event.preventDefault();
+                    items[items.length - 1].focus();
+                    break;
+            }
+        });
+
+        // Navigation link hover effect
+        document.querySelectorAll('nav a, .profile-menu-item').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.opacity = '0.8';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.opacity = '1';
+            });
+        });
+    </script>
+</body>
+</html>

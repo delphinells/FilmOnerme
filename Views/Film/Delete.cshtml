@@ -1,0 +1,67 @@
+@model FilmOnerme.Models.Film
+
+@{
+    ViewData["Title"] = "Film Sil";
+}
+
+<div style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <div style="background-color: #1c1c1c; border-radius: 10px; padding: 20px;">
+        <h2 style="color: #FFD700; margin-bottom: 30px;">Film Silme Onayı</h2>
+
+        <div style="background-color: #dc3545; color: #fff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Uyarı:</strong> Bu filmi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+        </div>
+
+        <div style="color: #fff; margin-bottom: 30px;">
+            <h3 style="color: #FFD700; margin-bottom: 20px;">Film Detayları</h3>
+            
+            <div style="display: grid; gap: 15px;">
+                <p style="margin: 0; display: flex; align-items: center;">
+                    <i class="fas fa-film" style="color: #FFD700; width: 25px;"></i>
+                    <span style="margin-left: 10px;">@Model.Baslik</span>
+                </p>
+                <p style="margin: 0; display: flex; align-items: center;">
+                    <i class="fas fa-user-tie" style="color: #FFD700; width: 25px;"></i>
+                    <span style="margin-left: 10px;">@Model.Yonetmen</span>
+                </p>
+                <p style="margin: 0; display: flex; align-items: center;">
+                    <i class="fas fa-calendar" style="color: #FFD700; width: 25px;"></i>
+                    <span style="margin-left: 10px;">@Model.YapimYili</span>
+                </p>
+                <p style="margin: 0; display: flex; align-items: center;">
+                    <i class="fas fa-star" style="color: #FFD700; width: 25px;"></i>
+                    <span style="margin-left: 10px;">@Model.ImdbPuani</span>
+                </p>
+                <p style="margin: 0; display: flex; align-items: center;">
+                    <i class="fas fa-users" style="color: #FFD700; width: 25px;"></i>
+                    <span style="margin-left: 10px;">@Model.RandevuSayisi randevu</span>
+                </p>
+            </div>
+        </div>
+
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" style="flex: 1; padding: 12px; background-color: #dc3545; color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: opacity 0.3s;">
+                    <i class="fas fa-trash-alt"></i> Sil
+                </button>
+                <a asp-action="Index" style="flex: 1; padding: 12px; background-color: #6c757d; color: #fff; text-decoration: none; border-radius: 5px; text-align: center; transition: opacity 0.3s;">
+                    <i class="fas fa-times"></i> İptal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Button hover effect
+            $('button, a').hover(
+                function() { $(this).css('opacity', '0.8'); },
+                function() { $(this).css('opacity', '1'); }
+            );
+        });
+    </script>
+} 

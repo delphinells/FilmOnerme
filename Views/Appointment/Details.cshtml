@@ -1,0 +1,12 @@
+@model FilmOnerme.Models.Appointment
+@{
+    ViewData["Title"] = "Randevu Detay";
+}
+
+<div style="background-color:#1c1c1c; color:gold; padding:20px; border-radius:10px; max-width:600px;">
+    <h3>@Model.Film.Baslik</h3>
+    <p><strong>Kullanıcı:</strong> @Model.KullaniciAdi</p>
+    <p><strong>Tarih:</strong> @Model.Tarih.ToString("dd MMM yyyy HH:mm")</p>
+</div>
+
+<a href="/Appointment/Index" class="btn btn-secondary mt-3">Geri Dön</a>

@@ -1,0 +1,71 @@
+@using Microsoft.AspNetCore.Identity
+@using FilmOnerme.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<div style="display: flex; gap: 10px; align-items: center;">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post">
+            <button type="submit" style="
+                background-color: #dc3545;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                transition: all 0.3s;">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+            </button>
+        </form>
+    }
+    else
+    {
+        <a href="/Identity/Account/Register" style="
+            background-color: #FFD700;
+            color: #1c1c1c;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;">
+            <i class="fas fa-user-plus"></i> Kayıt Ol
+        </a>
+        <a href="/Identity/Account/Login" style="
+            background-color: #FFD700;
+            color: #1c1c1c;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;">
+            <i class="fas fa-sign-in-alt"></i> Giriş Yap
+        </a>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Button hover effects
+            $('button, a').hover(
+                function() { 
+                    $(this).css('opacity', '0.8');
+                },
+                function() { 
+                    $(this).css('opacity', '1');
+                }
+            );
+        });
+    </script>
+}

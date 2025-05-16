@@ -1,0 +1,34 @@
+## .NET Core
+bin/
+obj/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+.vs/
+.vscode/
+*.swp
+*.swo
+
+## SQLite
+*.db
+*.db-shm
+*.db-wal
+
+## macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+## Logs
+*.log
+logs/
+
+## Environment Variables
+.env
+appsettings.Development.json
+appsettings.Production.json
+
+## Dependencies
+node_modules/
+packages/ 

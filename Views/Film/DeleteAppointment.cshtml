@@ -1,0 +1,70 @@
+@model FilmOnerme.Models.Appointment
+
+@{
+    ViewData["Title"] = "Randevu Sil";
+}
+
+<div style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <div style="background-color: #1c1c1c; border-radius: 10px; padding: 20px;">
+        <h2 style="color: #FFD700; margin-bottom: 30px;">Randevu Silme Onayı</h2>
+
+        <div style="background-color: #dc3545; color: #fff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <i class="fas fa-exclamation-triangle"></i> Bu randevuyu silmek istediğinizden emin misiniz?
+        </div>
+
+        <div style="color: #fff; margin-bottom: 30px;">
+            <div style="margin-bottom: 15px;">
+                <strong style="color: #FFD700;">Film:</strong>
+                <span>@Model.Film?.Baslik</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <strong style="color: #FFD700;">Kullanıcı:</strong>
+                <span>@Model.KullaniciAdi</span>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <strong style="color: #FFD700;">Randevu Tarihi:</strong>
+                <span>@Model.Tarih.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+        </div>
+
+        <form asp-action="DeleteAppointment" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" style="
+                    flex: 1;
+                    padding: 12px;
+                    background-color: #dc3545;
+                    color: #fff;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: opacity 0.3s;">
+                    <i class="fas fa-trash-alt"></i> Randevuyu Sil
+                </button>
+                <a asp-action="Appointments" style="
+                    flex: 1;
+                    padding: 12px;
+                    background-color: #6c757d;
+                    color: #fff;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    text-align: center;
+                    transition: opacity 0.3s;">
+                    <i class="fas fa-times"></i> İptal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Button hover effect
+            $('button, a').hover(
+                function() { $(this).css('opacity', '0.8'); },
+                function() { $(this).css('opacity', '1'); }
+            );
+        });
+    </script>
+} 

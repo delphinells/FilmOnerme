@@ -1,0 +1,218 @@
+@model IEnumerable<FilmOnerme.Models.Film>
+
+@{
+    ViewData["Title"] = "Filmler";
+}
+
+<div style="max-width: 1200px; margin: 40px auto; padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 style="color: #1c1c1c; margin: 0;">Film Listesi</h2>
+        @if (User.IsInRole("Admin"))
+        {
+            <div style="display: flex; gap: 10px;">
+                <a asp-action="Create" style="
+                    background-color: #28a745;
+                    color: #fff;
+                    padding: 15px 30px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 1.1rem;
+                    font-weight: 500;
+                    transition: all 0.3s ease;">
+                    <i class="fas fa-plus"></i> Yeni Film Ekle
+                </a>
+                <a asp-action="Appointments" style="
+                    background-color: #007bff;
+                    color: #fff;
+                    padding: 15px 30px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-size: 1.1rem;
+                    font-weight: 500;
+                    transition: all 0.3s ease;">
+                    <i class="fas fa-calendar"></i> Tüm Randevular
+                </a>
+            </div>
+        }
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div style="background-color: #28a745; color: #fff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div style="text-align: center; padding: 40px; background-color: #f8f9fa; border-radius: 10px;">
+            <h3 style="color: #6c757d; margin-bottom: 20px;">Henüz film eklenmemiş</h3>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Create" style="
+                    display: inline-block;
+                    background-color: #28a745;
+                    color: #fff;
+                    padding: 15px 30px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    font-weight: 500;
+                    transition: all 0.3s ease;">
+                    <i class="fas fa-plus"></i> İlk Filmi Ekle
+                </a>
+            }
+        </div>
+    }
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+        @foreach (var item in Model)
+        {
+            <div style="
+                background-color: #1c1c1c;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                transition: transform 0.3s;
+                display: flex;
+                flex-direction: column;">
+
+                <div style="padding: 20px;">
+                    <h3 style="
+                        color: #FFD700;
+                        margin: 0 0 10px 0;
+                        font-size: 1.5rem;">
+                        @item.Baslik
+                    </h3>
+
+                    <div style="color: #fff; margin-bottom: 15px;">
+                        <p style="margin: 5px 0;">
+                            <i class="fas fa-film" style="color: #FFD700; width: 20px;"></i>
+                            <span style="margin-left: 10px;">@item.FilmTuru</span>
+                        </p>
+                        <p style="margin: 5px 0;">
+                            <i class="fas fa-user-tie" style="color: #FFD700; width: 20px;"></i>
+                            <span style="margin-left: 10px;">@item.Yonetmen</span>
+                        </p>
+                        <p style="margin: 5px 0;">
+                            <i class="fas fa-calendar" style="color: #FFD700; width: 20px;"></i>
+                            <span style="margin-left: 10px;">@item.YapimYili</span>
+                        </p>
+                        <p style="margin: 5px 0;">
+                            <i class="fas fa-star" style="color: #FFD700; width: 20px;"></i>
+                            <span style="margin-left: 10px;">@item.ImdbPuani</span>
+                        </p>
+                        <p style="margin: 5px 0;">
+                            <i class="fas fa-users" style="color: #FFD700; width: 20px;"></i>
+                            <span style="margin-left: 10px;">@item.RandevuSayisi randevu</span>
+                        </p>
+                    </div>
+
+                    <p style="
+                        color: #fff;
+                        margin: 0 0 20px 0;
+                        opacity: 0.8;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 3;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;">
+                        @item.Aciklama
+                    </p>
+
+                    <div style="display: flex; gap: 10px; margin-top: auto;">
+                        <a href="@Url.Action("Details", new { id = item.Id })" style="
+                            flex: 1;
+                            text-align: center;
+                            padding: 10px;
+                            background-color: #FFD700;
+                            color: #1c1c1c;
+                            text-decoration: none;
+                            border-radius: 5px;
+                            font-weight: 500;
+                            transition: opacity 0.3s;">
+                            <i class="fas fa-info-circle"></i> Detaylar
+                        </a>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <a href="@Url.Action("CreateAppointment", new { id = item.Id })" style="
+                                flex: 1;
+                                text-align: center;
+                                padding: 10px;
+                                background-color: #28a745;
+                                color: #fff;
+                                text-decoration: none;
+                                border-radius: 5px;
+                                font-weight: 500;
+                                transition: opacity 0.3s;">
+                                <i class="fas fa-calendar-plus"></i> Randevu Al
+                            </a>
+                        }
+                    </div>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <a href="@Url.Action("Edit", new { id = item.Id })" style="
+                                flex: 1;
+                                text-align: center;
+                                padding: 10px;
+                                background-color: #ffc107;
+                                color: #1c1c1c;
+                                text-decoration: none;
+                                border-radius: 5px;
+                                font-weight: 500;
+                                transition: opacity 0.3s;">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </a>
+                            <a href="@Url.Action("Delete", new { id = item.Id })" style="
+                                flex: 1;
+                                text-align: center;
+                                padding: 10px;
+                                background-color: #dc3545;
+                                color: #fff;
+                                text-decoration: none;
+                                border-radius: 5px;
+                                font-weight: 500;
+                                transition: opacity 0.3s;">
+                                <i class="fas fa-trash-alt"></i> Sil
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Card hover effect
+            $('[style*="background-color: #1c1c1c"]').hover(
+                function() { $(this).css('transform', 'translateY(-5px)'); },
+                function() { $(this).css('transform', 'translateY(0)'); }
+            );
+
+            // Button hover effect
+            $('a[style*="background-color"]').hover(
+                function() {
+                    $(this).css({
+                        'transform': 'translateY(-2px)',
+                        'box-shadow': '0 4px 8px rgba(0,0,0,0.1)'
+                    });
+                },
+                function() {
+                    $(this).css({
+                        'transform': 'translateY(0)',
+                        'box-shadow': 'none'
+                    });
+                }
+            );
+        });
+    </script>
+}

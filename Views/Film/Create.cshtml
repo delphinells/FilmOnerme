@@ -1,0 +1,106 @@
+@model FilmOnerme.Models.Film
+
+@{
+    ViewData["Title"] = "Film Ekle";
+}
+
+<div style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <div style="background-color: #1c1c1c; border-radius: 10px; padding: 20px;">
+        <h2 style="color: #FFD700; margin-bottom: 30px;">Yeni Film Ekle</h2>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div style="background-color: #dc3545; color: #fff; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <div asp-validation-summary="All" style="margin-bottom: 0;"></div>
+            </div>
+        }
+
+        <form asp-action="Create" method="post">
+            <div style="margin-bottom: 20px;">
+                <label asp-for="Baslik" style="display: block; color: #FFD700; margin-bottom: 8px;">Film Başlığı</label>
+                <input asp-for="Baslik" style="width: 100%; padding: 10px; background-color: #333; border: 1px solid #FFD700; color: #fff; border-radius: 5px;" />
+                <span asp-validation-for="Baslik" style="color: #dc3545; font-size: 0.875rem;"></span>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label asp-for="Aciklama" style="display: block; color: #FFD700; margin-bottom: 8px;">Film Açıklaması</label>
+                <textarea asp-for="Aciklama" style="width: 100%; padding: 10px; background-color: #333; border: 1px solid #FFD700; color: #fff; border-radius: 5px; min-height: 100px;"></textarea>
+                <span asp-validation-for="Aciklama" style="color: #dc3545; font-size: 0.875rem;"></span>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label asp-for="FilmTuru" style="display: block; color: #FFD700; margin-bottom: 8px;">Film Türü</label>
+                <select asp-for="FilmTuru" style="width: 100%; padding: 10px; background-color: #333; border: 1px solid #FFD700; color: #fff; border-radius: 5px;">
+                    <option value="">Film türü seçin</option>
+                    <option value="Aksiyon">Aksiyon</option>
+                    <option value="Komedi">Komedi</option>
+                    <option value="Dram">Dram</option>
+                    <option value="Bilim Kurgu">Bilim Kurgu</option>
+                    <option value="Korku">Korku</option>
+                    <option value="Romantik">Romantik</option>
+                    <option value="Macera">Macera</option>
+                    <option value="Animasyon">Animasyon</option>
+                    <option value="Belgesel">Belgesel</option>
+                </select>
+                <span asp-validation-for="FilmTuru" style="color: #dc3545; font-size: 0.875rem;"></span>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label asp-for="Yonetmen" style="display: block; color: #FFD700; margin-bottom: 8px;">Yönetmen</label>
+                <input asp-for="Yonetmen" style="width: 100%; padding: 10px; background-color: #333; border: 1px solid #FFD700; color: #fff; border-radius: 5px;" />
+                <span asp-validation-for="Yonetmen" style="color: #dc3545; font-size: 0.875rem;"></span>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label asp-for="YapimYili" style="display: block; color: #FFD700; margin-bottom: 8px;">Yapım Yılı</label>
+                <input asp-for="YapimYili" type="number" min="1900" max="2099" style="width: 100%; padding: 10px; background-color: #333; border: 1px solid #FFD700; color: #fff; border-radius: 5px;" />
+                <span asp-validation-for="YapimYili" style="color: #dc3545; font-size: 0.875rem;"></span>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label asp-for="ImdbPuani" style="display: block; color: #FFD700; margin-bottom: 8px;">IMDB Puanı</label>
+                <input asp-for="ImdbPuani" type="number" step="0.1" min="0" max="10" style="width: 100%; padding: 10px; background-color: #333; border: 1px solid #FFD700; color: #fff; border-radius: 5px;" placeholder="Örnek: 8.5" />
+                <span asp-validation-for="ImdbPuani" style="color: #dc3545; font-size: 0.875rem;"></span>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label asp-for="GosterimTarihi" style="display: block; color: #FFD700; margin-bottom: 8px;">Gösterim Tarihi</label>
+                <input asp-for="GosterimTarihi" type="datetime-local" style="width: 100%; padding: 10px; background-color: #333; border: 1px solid #FFD700; color: #fff; border-radius: 5px;" />
+                <span asp-validation-for="GosterimTarihi" style="color: #dc3545; font-size: 0.875rem;"></span>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" style="flex: 1; padding: 12px; background-color: #28a745; color: #fff; border: none; border-radius: 5px; cursor: pointer; transition: opacity 0.3s;">
+                    <i class="fas fa-save"></i> Kaydet
+                </button>
+                <a asp-action="Index" style="flex: 1; padding: 12px; background-color: #6c757d; color: #fff; text-decoration: none; border-radius: 5px; text-align: center; transition: opacity 0.3s;">
+                    <i class="fas fa-times"></i> İptal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            // Input focus effect
+            $('input, textarea, select').focus(function() {
+                $(this).css('border-color', '#28a745');
+            }).blur(function() {
+                $(this).css('border-color', '#FFD700');
+            });
+
+            // Button hover effect
+            $('button, a').hover(
+                function() { $(this).css('opacity', '0.8'); },
+                function() { $(this).css('opacity', '1'); }
+            );
+
+            // Set min date for GosterimTarihi
+            var today = new Date();
+            $('#GosterimTarihi').attr('min', today.toISOString().slice(0, 16));
+        });
+    </script>
+}

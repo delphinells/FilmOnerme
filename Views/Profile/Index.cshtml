@@ -1,0 +1,134 @@
+@model FilmOnerme.Models.UserProfile
+
+@{
+    ViewData["Title"] = "Profilim";
+}
+
+<div style="max-width: 1200px; margin: 40px auto; padding: 20px;">
+    <div style="display: grid; grid-template-columns: 300px 1fr; gap: 30px;">
+        <!-- Sol Taraf - Profil Bilgileri -->
+        <div style="background-color: #1c1c1c; border-radius: 10px; padding: 20px; height: fit-content;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="~/images/@Model.ProfilePicture" alt="Profil Resmi" 
+                     style="width: 150px; height: 150px; border-radius: 50%; border: 3px solid #FFD700; margin-bottom: 15px;" />
+                <h3 style="color: #FFD700; margin: 0;">@Model.FullName</h3>
+                <p style="color: #fff; margin-top: 5px;">@User.Identity?.Name</p>
+            </div>
+
+            <div style="margin-top: 20px;">
+                @if (!string.IsNullOrEmpty(Model.Bio))
+                {
+                    <div style="margin-bottom: 15px;">
+                        <h4 style="color: #FFD700; margin-bottom: 5px;">Biyografi</h4>
+                        <p style="color: #fff; margin: 0;">@Model.Bio</p>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.FavoriteGenres))
+                {
+                    <div style="margin-bottom: 15px;">
+                        <h4 style="color: #FFD700; margin-bottom: 5px;">Favori Film Türleri</h4>
+                        <p style="color: #fff; margin: 0;">@Model.FavoriteGenres</p>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.FavoriteDirector))
+                {
+                    <div style="margin-bottom: 15px;">
+                        <h4 style="color: #FFD700; margin-bottom: 5px;">En Sevdiği Yönetmen</h4>
+                        <p style="color: #fff; margin: 0;">@Model.FavoriteDirector</p>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.WatchingFrequency))
+                {
+                    <div style="margin-bottom: 15px;">
+                        <h4 style="color: #FFD700; margin-bottom: 5px;">Film İzleme Sıklığı</h4>
+                        <p style="color: #fff; margin: 0;">@Model.WatchingFrequency</p>
+                    </div>
+                }
+
+                <a href="@Url.Action("Edit", "Profile")" style="
+                    display: inline-block;
+                    background-color: #FFD700;
+                    color: #1c1c1c;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    text-decoration: none;
+                    margin-top: 15px;
+                    width: 100%;
+                    text-align: center;
+                    font-weight: 500;
+                    transition: all 0.3s;">
+                    <i class="fas fa-edit"></i> Profili Düzenle
+                </a>
+            </div>
+        </div>
+
+        <!-- Sağ Taraf - Randevular -->
+        <div>
+            <div style="background-color: #1c1c1c; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                <h3 style="color: #FFD700; margin: 0 0 20px 0;">
+                    <i class="fas fa-calendar-alt"></i> Son Randevularım
+                </h3>
+
+                @if (ViewBag.Appointments != null && ViewBag.Appointments.Count > 0)
+                {
+                    <div style="display: grid; gap: 15px;">
+                        @foreach (var appointment in ViewBag.Appointments)
+                        {
+                            <div style="
+                                background-color: rgba(255,255,255,0.05);
+                                padding: 15px;
+                                border-radius: 8px;
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;">
+                                <div>
+                                    <h4 style="color: #FFD700; margin: 0;">@appointment.Film.Baslik</h4>
+                                    <p style="color: #fff; margin: 5px 0 0 0;">
+                                        @appointment.Tarih.ToString("dd MMMM yyyy HH:mm")
+                                    </p>
+                                </div>
+                                <a href="@Url.Action("Details", "Film", new { id = appointment.FilmId })" style="
+                                    color: #FFD700;
+                                    text-decoration: none;">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p style="color: #fff; text-align: center; margin: 0;">Henüz randevunuz bulunmuyor.</p>
+                }
+
+                <a href="@Url.Action("Index", "Film")" style="
+                    display: inline-block;
+                    background-color: #FFD700;
+                    color: #1c1c1c;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    text-decoration: none;
+                    margin-top: 20px;
+                    font-weight: 500;
+                    transition: all 0.3s;">
+                    <i class="fas fa-film"></i> Film Listesine Git
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Butonlara hover efekti
+            $('a').hover(
+                function() { $(this).css('opacity', '0.8'); },
+                function() { $(this).css('opacity', '1'); }
+            );
+        });
+    </script>
+} 
