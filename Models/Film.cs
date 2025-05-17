@@ -41,5 +41,8 @@ namespace FilmOnerme.Models
         public DateTime GosterimTarihi { get; set; }
 
         public int RandevuSayisi { get; set; } = 0;
+
+        // Yorumlar ilişkisi
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

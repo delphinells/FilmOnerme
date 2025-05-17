@@ -12,6 +12,7 @@ namespace FilmOnerme.Data
         }
 
         public DbSet<Film> Films { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
 

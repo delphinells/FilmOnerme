@@ -1,96 +1,127 @@
 @model FilmOnerme.Models.Film
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
 
 @{
-    ViewData["Title"] = Model.Baslik;
+    ViewData["Title"] = "Film Detayları";
+    var currentUser = await UserManager.GetUserAsync(User);
 }
 
-<div style="max-width: 800px; margin: 40px auto; padding: 20px;">
-    <div style="background-color: #1c1c1c; border-radius: 10px; padding: 20px;">
-        <h2 style="color: #FFD700; margin: 0 0 30px 0;">@Model.Baslik</h2>
+<div class="container mt-4">
+    <h1>@Model.Baslik</h1>
 
-        <div style="color: #fff; margin-bottom: 30px;">
-            <div style="display: grid; gap: 15px;">
-                <p style="margin: 0; display: flex; align-items: center;">
-                    <i class="fas fa-film" style="color: #FFD700; width: 25px;"></i>
-                    <span style="margin-left: 10px;">@Model.FilmTuru</span>
-                </p>
-                <p style="margin: 0; display: flex; align-items: center;">
-                    <i class="fas fa-user-tie" style="color: #FFD700; width: 25px;"></i>
-                    <span style="margin-left: 10px;">@Model.Yonetmen</span>
-                </p>
-                <p style="margin: 0; display: flex; align-items: center;">
-                    <i class="fas fa-calendar" style="color: #FFD700; width: 25px;"></i>
-                    <span style="margin-left: 10px;">@Model.YapimYili</span>
-                </p>
-                <p style="margin: 0; display: flex; align-items: center;">
-                    <i class="fas fa-star" style="color: #FFD700; width: 25px;"></i>
-                    <span style="margin-left: 10px;">@Model.ImdbPuani</span>
-                </p>
-                <p style="margin: 0; display: flex; align-items: center;">
-                    <i class="fas fa-users" style="color: #FFD700; width: 25px;"></i>
-                    <span style="margin-left: 10px;">@Model.RandevuSayisi randevu</span>
-                </p>
-                <p style="margin: 0; display: flex; align-items: center;">
-                    <i class="fas fa-clock" style="color: #FFD700; width: 25px;"></i>
-                    <span style="margin-left: 10px;">Gösterim: @Model.GosterimTarihi.ToString("dd MMMM yyyy")</span>
-                </p>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Film Bilgileri</h5>
+                    <dl class="row">
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Baslik)</dt>
+                        <dd class="col-sm-9">@Model.Baslik</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Aciklama)</dt>
+                        <dd class="col-sm-9">@Model.Aciklama</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Yonetmen)</dt>
+                        <dd class="col-sm-9">@Model.Yonetmen</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.YapimYili)</dt>
+                        <dd class="col-sm-9">@Model.YapimYili</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FilmTuru)</dt>
+                        <dd class="col-sm-9">@Model.FilmTuru</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ImdbPuani)</dt>
+                        <dd class="col-sm-9">@Model.ImdbPuani</dd>
+
+                        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.GosterimTarihi)</dt>
+                        <dd class="col-sm-9">@Model.GosterimTarihi.ToShortDateString()</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Yorumlar Bölümü -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Yorumlar</h5>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form asp-controller="Comment" asp-action="Create" method="post" class="mb-4">
+                            <input type="hidden" name="filmId" value="@Model.Id" />
+                            <div class="form-group">
+                                <textarea name="content" class="form-control" rows="3" placeholder="Yorumunuzu yazın..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-2">Yorum Yap</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p>Yorum yapmak için lütfen <a asp-area="Identity" asp-page="/Account/Login">giriş yapın</a>.</p>
+                    }
+
+                    <div class="comments-list">
+                        @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
+                        {
+                            <div class="comment-item border-bottom py-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-1">@comment.UserName</h6>
+                                    <small class="text-muted">@comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+                                </div>
+                                <p class="mb-1">@comment.Content</p>
+
+                                @if (User.Identity.IsAuthenticated && (comment.UserId == currentUser?.Id || User.IsInRole("Admin")))
+                                {
+                                    <div class="comment-actions mt-2">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="showEditForm(@comment.Id)">Düzenle</button>
+                                        <form asp-controller="Comment" asp-action="Delete" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@comment.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yorumu silmek istediğinizden emin misiniz?')">Sil</button>
+                                        </form>
+                                    </div>
+
+                                    <div id="editForm_@comment.Id" style="display: none;" class="mt-2">
+                                        <form asp-controller="Comment" asp-action="Edit" method="post">
+                                            <input type="hidden" name="id" value="@comment.Id" />
+                                            <textarea name="content" class="form-control" rows="2">@comment.Content</textarea>
+                                            <button type="submit" class="btn btn-sm btn-primary mt-2">Kaydet</button>
+                                            <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="hideEditForm(@comment.Id)">İptal</button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div style="margin: 30px 0;">
-            <h3 style="color: #FFD700; margin: 0 0 15px 0;">Film Hakkında</h3>
-            <p style="color: #fff; line-height: 1.6; margin: 0;">@Model.Aciklama</p>
-        </div>
-
-        <div style="display: flex; gap: 15px; margin-top: 30px;">
-            @if (User.Identity?.IsAuthenticated == true)
-            {
-                <a href="@Url.Action("CreateAppointment", new { id = Model.Id })" style="
-                    flex: 1;
-                    text-align: center;
-                    padding: 12px 20px;
-                    background-color: #28a745;
-                    color: #fff;
-                    text-decoration: none;
-                    border-radius: 5px;
-                    font-weight: 500;
-                    transition: opacity 0.3s;
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 8px;">
-                    <i class="fas fa-calendar-plus"></i>
-                    Randevu Al
-                </a>
-            }
-            <a href="@Url.Action("Index")" style="
-                flex: 1;
-                text-align: center;
-                padding: 12px 20px;
-                background-color: #6c757d;
-                color: #fff;
-                text-decoration: none;
-                border-radius: 5px;
-                transition: opacity 0.3s;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;">
-                <i class="fas fa-arrow-left"></i>
-                Listeye Dön
-            </a>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">İşlemler</h5>
+                    <div class="d-grid gap-2">
+                        <a asp-action="Index" class="btn btn-secondary">Filme Geri Dön</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a>
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Sil</a>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        $(document).ready(function() {
-            // Button hover effect
-            $('a[style*="background-color"]').hover(
-                function() { $(this).css('opacity', '0.8'); },
-                function() { $(this).css('opacity', '1'); }
-            );
-        });
+        function showEditForm(commentId) {
+            document.getElementById(`editForm_${commentId}`).style.display = 'block';
+        }
+
+        function hideEditForm(commentId) {
+            document.getElementById(`editForm_${commentId}`).style.display = 'none';
+        }
     </script>
 }

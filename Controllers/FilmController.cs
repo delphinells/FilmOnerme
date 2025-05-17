@@ -37,6 +37,7 @@ namespace FilmOnerme.Controllers
             }
 
             var film = await _context.Films
+                .Include(f => f.Comments)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (film == null)
