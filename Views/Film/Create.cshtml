@@ -1,12 +1,13 @@
 @model FilmOnerme.Models.Film
 
 @{
-    ViewData["Title"] = "Film Ekle";
+    ViewData["Title"] = ViewBag.Title ?? "Film Ekle";
+    var isUpcoming = ViewBag.IsUpcoming ?? false;
 }
 
 <div style="max-width: 800px; margin: 40px auto; padding: 20px;">
     <div style="background-color: #1c1c1c; border-radius: 10px; padding: 20px;">
-        <h2 style="color: #FFD700; margin-bottom: 30px;">Yeni Film Ekle</h2>
+        <h2 style="color: #FFD700; margin-bottom: 30px;">@ViewBag.Title</h2>
 
         @if (!ViewData.ModelState.IsValid)
         {
@@ -67,6 +68,10 @@
                 <label asp-for="GosterimTarihi" style="display: block; color: #FFD700; margin-bottom: 8px;">Gösterim Tarihi</label>
                 <input asp-for="GosterimTarihi" type="datetime-local" style="width: 100%; padding: 10px; background-color: #333; border: 1px solid #FFD700; color: #fff; border-radius: 5px;" />
                 <span asp-validation-for="GosterimTarihi" style="color: #dc3545; font-size: 0.875rem;"></span>
+                @if (!isUpcoming)
+                {
+                    <small style="display: block; color: #6c757d; margin-top: 5px;">Arşiv filmleri için geçmiş tarih seçebilirsiniz.</small>
+                }
             </div>
 
             <div style="display: flex; gap: 10px;">
@@ -100,7 +105,10 @@
 
             // Set min date for GosterimTarihi
             var today = new Date();
-            $('#GosterimTarihi').attr('min', today.toISOString().slice(0, 16));
+            var minDate = @(isUpcoming ? "today.toISOString().slice(0, 16)" : "null");
+            if (minDate) {
+                $('#GosterimTarihi').attr('min', minDate);
+            }
         });
     </script>
 }

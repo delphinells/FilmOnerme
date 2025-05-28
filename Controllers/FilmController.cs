@@ -50,9 +50,29 @@ namespace FilmOnerme.Controllers
 
         // GET: Film/Create
         [Authorize(Roles = "Admin")]
-        public IActionResult Create()
+        public IActionResult Create(string type = "archive")
         {
-            return View();
+            var film = new Film();
+            
+            // Varsayılan tarihi ayarla
+            switch (type)
+            {
+                case "upcoming":
+                    // Yakında gelecek filmler için 1 ay sonrası
+                    film.GosterimTarihi = DateTime.Now.AddMonths(1).Date.AddHours(14);
+                    ViewBag.Title = "Yakında Gelecek Film Ekle";
+                    ViewBag.IsUpcoming = true;
+                    break;
+                case "archive":
+                default:
+                    // Arşiv filmleri için varsayılan tarih 1 ay öncesi
+                    film.GosterimTarihi = DateTime.Now.AddMonths(-1).Date.AddHours(14);
+                    ViewBag.Title = "Film Ekle";
+                    ViewBag.IsUpcoming = false;
+                    break;
+            }
+
+            return View(film);
         }
 
         // POST: Film/Create
