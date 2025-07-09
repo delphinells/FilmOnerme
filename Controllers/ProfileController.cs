@@ -47,6 +47,19 @@ namespace FilmOnerme.Controllers
                 await _context.SaveChangesAsync();
             }
 
+            var watchedFilms = await _context.UserFilmStatuses
+                .Include(u => u.Film)
+                .Where(u => u.UserId == user.Id && u.Status == FilmStatus.Watched)
+                .Select(u => u.Film)
+                .ToListAsync();
+            var toWatchFilms = await _context.UserFilmStatuses
+                .Include(u => u.Film)
+                .Where(u => u.UserId == user.Id && u.Status == FilmStatus.ToWatch)
+                .Select(u => u.Film)
+                .ToListAsync();
+            ViewBag.WatchedFilms = watchedFilms;
+            ViewBag.ToWatchFilms = toWatchFilms;
+
             ViewBag.Appointments = await _context.Appointments
                 .Include(a => a.Film)
                 .Where(a => a.KullaniciAdi == User.Identity.Name)

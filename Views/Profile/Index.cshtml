@@ -65,57 +65,55 @@
             </div>
         </div>
 
-        <!-- Sağ Taraf - Randevular -->
+        <!-- Sağ Taraf - İzlenenler ve İzlenecekler -->
         <div>
             <div style="background-color: #1c1c1c; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
-                <h3 style="color: #FFD700; margin: 0 0 20px 0;">
-                    <i class="fas fa-calendar-alt"></i> Son Randevularım
+                <h3 style="color: #28a745; margin: 0 0 20px 0;">
+                    <i class="fas fa-check"></i> İzlenenler
                 </h3>
-
-                @if (ViewBag.Appointments != null && ViewBag.Appointments.Count > 0)
+                @if (ViewBag.WatchedFilms != null && ViewBag.WatchedFilms.Count > 0)
                 {
                     <div style="display: grid; gap: 15px;">
-                        @foreach (var appointment in ViewBag.Appointments)
+                        @foreach (var film in ViewBag.WatchedFilms)
                         {
-                            <div style="
-                                background-color: rgba(255,255,255,0.05);
-                                padding: 15px;
-                                border-radius: 8px;
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;">
+                            <div style="background-color: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
-                                    <h4 style="color: #FFD700; margin: 0;">@appointment.Film.Baslik</h4>
-                                    <p style="color: #fff; margin: 5px 0 0 0;">
-                                        @appointment.Tarih.ToString("dd MMMM yyyy HH:mm")
-                                    </p>
+                                    <h4 style="color: #FFD700; margin: 0;">@film.Baslik</h4>
+                                    <p style="color: #fff; margin: 5px 0 0 0;">@film.Yonetmen - @film.YapimYili</p>
                                 </div>
-                                <a href="@Url.Action("Details", "Film", new { id = appointment.FilmId })" style="
-                                    color: #FFD700;
-                                    text-decoration: none;">
-                                    <i class="fas fa-arrow-right"></i>
-                                </a>
+                                <a href="@Url.Action("Details", "Film", new { id = film.Id })" style="color: #FFD700; text-decoration: none;"><i class="fas fa-arrow-right"></i></a>
                             </div>
                         }
                     </div>
                 }
                 else
                 {
-                    <p style="color: #fff; text-align: center; margin: 0;">Henüz randevunuz bulunmuyor.</p>
+                    <p style="color: #fff; text-align: center; margin: 0;">Henüz izlediğiniz film yok.</p>
                 }
-
-                <a href="@Url.Action("Index", "Film")" style="
-                    display: inline-block;
-                    background-color: #FFD700;
-                    color: #1c1c1c;
-                    padding: 10px 20px;
-                    border-radius: 5px;
-                    text-decoration: none;
-                    margin-top: 20px;
-                    font-weight: 500;
-                    transition: all 0.3s;">
-                    <i class="fas fa-film"></i> Film Listesine Git
-                </a>
+            </div>
+            <div style="background-color: #1c1c1c; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                <h3 style="color: #007bff; margin: 0 0 20px 0;">
+                    <i class="fas fa-clock"></i> İzlenecekler
+                </h3>
+                @if (ViewBag.ToWatchFilms != null && ViewBag.ToWatchFilms.Count > 0)
+                {
+                    <div style="display: grid; gap: 15px;">
+                        @foreach (var film in ViewBag.ToWatchFilms)
+                        {
+                            <div style="background-color: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h4 style="color: #FFD700; margin: 0;">@film.Baslik</h4>
+                                    <p style="color: #fff; margin: 5px 0 0 0;">@film.Yonetmen - @film.YapimYili</p>
+                                </div>
+                                <a href="@Url.Action("Details", "Film", new { id = film.Id })" style="color: #FFD700; text-decoration: none;"><i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p style="color: #fff; text-align: center; margin: 0;">Henüz izlenecek film eklemediniz.</p>
+                }
             </div>
         </div>
     </div>

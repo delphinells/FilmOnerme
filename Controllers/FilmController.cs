@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using FilmOnerme.Data;
 using FilmOnerme.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 
 namespace FilmOnerme.Controllers
 {
@@ -11,11 +12,13 @@ namespace FilmOnerme.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<FilmController> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public FilmController(ApplicationDbContext context, ILogger<FilmController> logger)
+        public FilmController(ApplicationDbContext context, ILogger<FilmController> logger, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }
 
         // GET: Film
@@ -343,6 +346,39 @@ namespace FilmOnerme.Controllers
             }
 
             return RedirectToAction(nameof(Appointments));
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SetFilmStatus(int filmId, string status)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            if (!Enum.TryParse<FilmStatus>(status, out var filmStatus))
+                return BadRequest();
+
+            var existing = await _context.UserFilmStatuses
+                .FirstOrDefaultAsync(x => x.UserId == user.Id && x.FilmId == filmId);
+
+            if (existing != null)
+            {
+                existing.Status = filmStatus;
+                existing.CreatedAt = DateTime.Now;
+            }
+            else
+            {
+                _context.UserFilmStatuses.Add(new UserFilmStatus
+                {
+                    UserId = user.Id,
+                    FilmId = filmId,
+                    Status = filmStatus,
+                    CreatedAt = DateTime.Now
+                });
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         private bool FilmExists(int id)
