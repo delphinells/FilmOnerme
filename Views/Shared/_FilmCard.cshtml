@@ -58,10 +58,10 @@
         </a>
         @if (User.Identity?.IsAuthenticated == true && !User.IsInRole("Admin"))
         {
-            <form asp-action="SetFilmStatus" asp-controller="Film" method="post" style="flex: 1; margin: 0;">
+            <form asp-action="SetFilmStatus" asp-controller="Film" method="post" class="film-status-form" style="flex: 1; margin: 0;">
                 <input type="hidden" name="filmId" value="@Model.Id" />
                 <input type="hidden" name="status" value="Watched" />
-                <button type="submit" style="
+                <button type="submit" class="film-status-btn" style="
                     width: 100%;
                     padding: 10px;
                     background-color: #28a745;
@@ -69,14 +69,15 @@
                     border: none;
                     border-radius: 5px;
                     font-weight: 500;
-                    transition: opacity 0.3s;">
+                    transition: opacity 0.3s, box-shadow 0.3s;
+                    position: relative;">
                     <i class="fas fa-check"></i> İzledim
                 </button>
             </form>
-            <form asp-action="SetFilmStatus" asp-controller="Film" method="post" style="flex: 1; margin: 0;">
+            <form asp-action="SetFilmStatus" asp-controller="Film" method="post" class="film-status-form" style="flex: 1; margin: 0;">
                 <input type="hidden" name="filmId" value="@Model.Id" />
                 <input type="hidden" name="status" value="ToWatch" />
-                <button type="submit" style="
+                <button type="submit" class="film-status-btn" style="
                     width: 100%;
                     padding: 10px;
                     background-color: #007bff;
@@ -84,7 +85,8 @@
                     border: none;
                     border-radius: 5px;
                     font-weight: 500;
-                    transition: opacity 0.3s;">
+                    transition: opacity 0.3s, box-shadow 0.3s;
+                    position: relative;">
                     <i class="fas fa-clock"></i> İzleyeceğim
                 </button>
             </form>
@@ -113,4 +115,27 @@
             </div>
         }
     </div>
-</div> 
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.film-status-form').on('submit', function(e) {
+                var btn = $(this).find('.film-status-btn');
+                btn.addClass('clicked');
+                btn.prop('disabled', true);
+                e.preventDefault();
+                setTimeout(() => {
+                    this.submit();
+                }, 500);
+            });
+        });
+    </script>
+    <style>
+        .film-status-btn.clicked {
+            box-shadow: 0 0 0 4px #FFD700, 0 2px 8px rgba(0,0,0,0.15);
+            opacity: 0.7;
+            transform: scale(0.97);
+        }
+    </style>
+} 
