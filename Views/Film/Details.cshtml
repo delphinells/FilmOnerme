@@ -78,7 +78,7 @@
                                             <input type="hidden" name="id" value="@comment.Id" />
                                             <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yorumu silmek istediğinizden emin misiniz?')">Sil</button>
                                         </form>
-                                    </div>
+        </div>
 
                                     <div id="editForm_@comment.Id" style="display: none;" class="mt-2">
                                         <form asp-controller="Comment" asp-action="Edit" method="post">

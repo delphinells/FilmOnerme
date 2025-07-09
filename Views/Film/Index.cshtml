@@ -1,4 +1,5 @@
 @model IEnumerable<FilmOnerme.Models.Film>
+@using Microsoft.AspNetCore.Identity
 
 @{
     ViewData["Title"] = "Filmler";
@@ -7,81 +8,120 @@
     var tumFilmler = Model.Where(f => f.GosterimTarihi < DateTime.Now.AddDays(-30)).OrderByDescending(f => f.GosterimTarihi);
 }
 
-<div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-        <h1 style="color: #FFD700; margin: 0;">Filmler</h1>
-        @if (User.IsInRole("Admin"))
-        {
-            <div style="display: flex; gap: 10px;">
-                <a asp-action="Create" asp-route-type="archive" style="
-                    background-color: #FFD700;
-                    color: #1c1c1c;
-                    padding: 10px 20px;
-                    text-decoration: none;
-                    border-radius: 5px;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;">
-                    <i class="fas fa-film"></i> Film Ekle
-                </a>
-                <a asp-action="Create" asp-route-type="upcoming" style="
+@if (!User.Identity.IsAuthenticated)
+{
+    <div style="text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #1c1c1c 60%, #FFD700 100%); min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <i class="fas fa-film" style="font-size: 5rem; color: #FFD700; margin-bottom: 30px;"></i>
+        <h1 style="font-size: 3.5rem; color: #fff; margin-bottom: 20px; letter-spacing: 2px;">Film Arşivine Erişmek İçin Giriş Yapın</h1>
+        <p style="font-size: 1.3rem; color: #fff; margin-bottom: 35px; max-width: 600px; margin-left: auto; margin-right: auto; opacity: 0.9;">
+            En yeni filmleri keşfetmek, randevu almak ve topluluğumuzla film deneyimlerinizi paylaşmak için giriş yapın veya kayıt olun.
+        </p>
+        <div style="margin-bottom: 30px;">
+            <a href="/Identity/Account/Login" style="
+                display: inline-block;
+                background-color: #FFD700;
+                color: #1c1c1c;
+                padding: 15px 35px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-size: 1.2rem;
+                font-weight: bold;
+                margin-right: 15px;
+                transition: all 0.3s;">
+                Giriş Yap
+            </a>
+            <a href="/Identity/Account/Register" style="
+                display: inline-block;
+                background-color: #fff;
+                color: #1c1c1c;
+                padding: 15px 35px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-size: 1.2rem;
+                font-weight: bold;
+                transition: all 0.3s;">
+                Kayıt Ol
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h1 style="color: #FFD700; margin: 0;">Filmler</h1>
+            @if (User.IsInRole("Admin"))
+            {
+                <div style="display: flex; gap: 10px;">
+                    <a asp-action="Create" asp-route-type="archive" style="
+                        background-color: #FFD700;
+                        color: #1c1c1c;
+                        padding: 10px 20px;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;">
+                        <i class="fas fa-film"></i> Film Ekle
+                    </a>
+                    <a asp-action="Create" asp-route-type="upcoming" style="
                     background-color: #28a745;
                     color: #fff;
                     padding: 10px 20px;
                     text-decoration: none;
                     border-radius: 5px;
-                    display: flex;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;">
+                        <i class="fas fa-plus"></i> Yakında Gelecek Film
+                    </a>
+                    <a asp-action="Appointments" style="
+                        background-color: #007bff;
+                        color: #fff;
+                        padding: 10px 20px;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        display: flex;
                     align-items: center;
-                    gap: 8px;">
-                    <i class="fas fa-plus"></i> Yakında Gelecek Film
+                        gap: 8px;">
+                        <i class="fas fa-calendar"></i> Tüm Randevular
                 </a>
-                <a asp-action="Appointments" style="
-                    background-color: #007bff;
-                    color: #fff;
-                    padding: 10px 20px;
-                    text-decoration: none;
-                    border-radius: 5px;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;">
-                    <i class="fas fa-calendar"></i> Tüm Randevular
-                </a>
+                </div>
+            }
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div style="
+                background-color: #28a745;
+                color: white;
+                padding: 15px;
+                border-radius: 5px;
+                margin-bottom: 20px;">
+                <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
             </div>
         }
-    </div>
 
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div style="
-            background-color: #28a745;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;">
-            <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
-        </div>
-    }
-
-    <!-- Yakında Gelecek Filmler -->
-    @if (yakindaGelecekler.Any())
-    {
-        <div style="margin-bottom: 40px;">
-            <h2 style="color: #FFD700; margin-bottom: 20px;">
-                <i class="fas fa-clock"></i> Yakında Gelecek Filmler
-            </h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
-                @foreach (var item in yakindaGelecekler)
-                {
-                    <div style="
-                        background-color: #1c1c1c;
-                        border-radius: 10px;
-                        overflow: hidden;
-                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                        transition: transform 0.3s;
-                        display: flex;
-                        flex-direction: column;
-                        border: 2px solid #28a745;
-                        position: relative;">
+        <!-- Yakında Gelecek Filmler -->
+        @if (yakindaGelecekler.Any())
+        {
+            <div style="margin-bottom: 40px;">
+                <h2 style="color: #FFD700; margin-bottom: 20px;">
+                    <i class="fas fa-clock"></i> Yakında Gelecek Filmler
+                </h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+                    @foreach (var item in yakindaGelecekler)
+            {
+                <div style="
+                    background-color: #1c1c1c;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    transition: transform 0.3s;
+                    display: flex;
+                            flex-direction: column;
+                            border: 2px solid #28a745;
+                            position: relative;">
                         
                         <div class="ribbon" style="
                             background: #28a745;
@@ -99,28 +139,28 @@
                 }
             </div>
         </div>
-    }
+        }
 
-    <!-- Vizyondaki Filmler -->
-    @if (vizyondakiFilmler.Any())
-    {
-        <div style="margin-bottom: 40px;">
-            <h2 style="color: #FFD700; margin-bottom: 20px;">
-                <i class="fas fa-ticket-alt"></i> Vizyondaki Filmler
-            </h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
-                @foreach (var item in vizyondakiFilmler)
-                {
-                    <div style="
-                        background-color: #1c1c1c;
-                        border-radius: 10px;
-                        overflow: hidden;
-                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                        transition: transform 0.3s;
-                        display: flex;
-                        flex-direction: column;
-                        border: 2px solid #FFD700;
-                        position: relative;">
+        <!-- Vizyondaki Filmler -->
+        @if (vizyondakiFilmler.Any())
+        {
+            <div style="margin-bottom: 40px;">
+                <h2 style="color: #FFD700; margin-bottom: 20px;">
+                    <i class="fas fa-ticket-alt"></i> Vizyondaki Filmler
+                </h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+                    @foreach (var item in vizyondakiFilmler)
+                    {
+                        <div style="
+                            background-color: #1c1c1c;
+                            border-radius: 10px;
+                            overflow: hidden;
+                            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                            transition: transform 0.3s;
+                            display: flex;
+                            flex-direction: column;
+                            border: 2px solid #FFD700;
+                            position: relative;">
                         
                         <div class="ribbon" style="
                             background: #FFD700;
@@ -138,60 +178,61 @@
                 }
             </div>
         </div>
-    }
-
-    <!-- Film Arşivi -->
-    <div style="margin-bottom: 40px;">
-        <h2 style="color: #FFD700; margin-bottom: 20px;">
-            <i class="fas fa-film"></i> Film Arşivi
-        </h2>
-
-        @if (!Model.Any())
-        {
-            <div style="text-align: center; padding: 40px; background-color: #1c1c1c; border-radius: 10px;">
-                <h3 style="color: #FFD700; margin-bottom: 20px;">Henüz film eklenmemiş</h3>
-                @if (User.IsInRole("Admin"))
-                {
-                    <a asp-action="Create" asp-route-type="archive" style="
-                        display: inline-block;
-                        background-color: #28a745;
-                        color: #fff;
-                        padding: 15px 30px;
-                        text-decoration: none;
-                        border-radius: 5px;
-                        font-weight: 500;
-                        transition: all 0.3s ease;">
-                        <i class="fas fa-plus"></i> İlk Filmi Ekle
-                    </a>
-                }
-            </div>
         }
-        else if (tumFilmler.Any())
-        {
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
-                @foreach (var item in tumFilmler)
-                {
-                    <div style="
-                        background-color: #1c1c1c;
-                        border-radius: 10px;
-                        overflow: hidden;
-                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                        transition: transform 0.3s;
-                        display: flex;
-                        flex-direction: column;">
-                        @await Html.PartialAsync("_FilmCard", item)
+
+        <!-- Film Arşivi -->
+        <div style="margin-bottom: 40px;">
+            <h2 style="color: #FFD700; margin-bottom: 20px;">
+                <i class="fas fa-film"></i> Film Arşivi
+            </h2>
+
+            @if (!Model.Any())
+            {
+                <div style="text-align: center; padding: 40px; background-color: #1c1c1c; border-radius: 10px;">
+                    <h3 style="color: #FFD700; margin-bottom: 20px;">Henüz film eklenmemiş</h3>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Create" asp-route-type="archive" style="
+                            display: inline-block;
+                                    background-color: #28a745;
+                                    color: #fff;
+                            padding: 15px 30px;
+                                    text-decoration: none;
+                                    border-radius: 5px;
+                                    font-weight: 500;
+                            transition: all 0.3s ease;">
+                            <i class="fas fa-plus"></i> İlk Filmi Ekle
+                                </a>
+                            }
+                        </div>
+            }
+            else if (tumFilmler.Any())
+                        {
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+                    @foreach (var item in tumFilmler)
+                    {
+                        <div style="
+                            background-color: #1c1c1c;
+                            border-radius: 10px;
+                            overflow: hidden;
+                            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                            transition: transform 0.3s;
+                            display: flex;
+                            flex-direction: column;">
+                            @await Html.PartialAsync("_FilmCard", item)
+                            </div>
+                        }
                     </div>
-                }
-            </div>
-        }
-        else
-        {
-            <div style="text-align: center; padding: 40px; background-color: #1c1c1c; border-radius: 10px;">
-                <h3 style="color: #FFD700; margin-bottom: 20px;">Arşivde film bulunmuyor</h3>
-            </div>
-        }
+            }
+            else
+            {
+                <div style="text-align: center; padding: 40px; background-color: #1c1c1c; border-radius: 10px;">
+                    <h3 style="color: #FFD700; margin-bottom: 20px;">Arşivde film bulunmuyor</h3>
+                </div>
+            }
+        </div>
     </div>
-</div>
+}
 
 @section Scripts {
     <script>

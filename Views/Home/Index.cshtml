@@ -2,73 +2,77 @@
     ViewData["Title"] = "Ana Sayfa";
 }
 
-<div style="text-align: center; padding: 40px 20px;">
-    <div style="max-width: 800px; margin: 0 auto;">
-        <div style="margin-bottom: 40px;">
-            <i class="fas fa-film" style="font-size: 4rem; color: #1c1c1c; margin-bottom: 20px;"></i>
-            <h1 style="font-size: 3rem; color: #1c1c1c; margin-bottom: 20px;">Film Önerme Sistemine Hoş Geldiniz</h1>
-            <p style="font-size: 1.2rem; color: #666; margin-bottom: 30px;">
-                Sevdiğiniz filmleri keşfedin, randevu alın ve film deneyiminizi paylaşın.
-            </p>
+<div style="text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #1c1c1c 60%, #FFD700 100%); min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <i class="fas fa-film" style="font-size: 5rem; color: #FFD700; margin-bottom: 30px;"></i>
+    <h1 style="font-size: 3.5rem; color: #fff; margin-bottom: 20px; letter-spacing: 2px;">Film Önerme Sistemine Hoş Geldiniz</h1>
+    <p style="font-size: 1.3rem; color: #fff; margin-bottom: 35px; max-width: 600px; margin-left: auto; margin-right: auto; opacity: 0.9;">
+        Sinema dünyasının büyüsüne adım atın! En yeni filmleri keşfedin, favorilerinizi arşivleyin ve topluluğumuzla film deneyimlerinizi paylaşın. Kendi randevunuzu oluşturun, yorum yapın ve sinema keyfini doyasıya yaşayın.
+    </p>
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <div style="margin-bottom: 30px;">
+            <a href="/Identity/Account/Login" style="
+                display: inline-block;
+                background-color: #FFD700;
+                color: #1c1c1c;
+                padding: 15px 35px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-size: 1.2rem;
+                font-weight: bold;
+                margin-right: 15px;
+                transition: all 0.3s;">
+                Giriş Yap
+            </a>
+            <a href="/Identity/Account/Register" style="
+                display: inline-block;
+                background-color: #fff;
+                color: #1c1c1c;
+                padding: 15px 35px;
+                border-radius: 8px;
+                text-decoration: none;
+                font-size: 1.2rem;
+                font-weight: bold;
+                transition: all 0.3s;">
+                Kayıt Ol
+            </a>
         </div>
+    }
+    else
+    {
+        <a href="@Url.Action("Index", "Film")" style="
+            display: inline-block;
+            background-color: #FFD700;
+            color: #1c1c1c;
+            padding: 15px 35px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.3s;">
+            Filmleri Görüntüle
+        </a>
+    }
+</div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
-            <div style="background-color: #1c1c1c; padding: 30px; border-radius: 10px; text-align: center; transition: transform 0.3s;">
-                <i class="fas fa-video" style="font-size: 2.5rem; color: #FFD700; margin-bottom: 15px;"></i>
-                <h3 style="color: #FFD700; margin-bottom: 10px;">Film Kataloğu</h3>
-                <p style="color: #fff; margin-bottom: 20px;">Geniş film koleksiyonumuzu keşfedin.</p>
-                <a href="@Url.Action("Index", "Film")" style="
-                    display: inline-block;
-                    background-color: #FFD700;
-                    color: #1c1c1c;
-                    padding: 10px 20px;
-                    border-radius: 5px;
-                    text-decoration: none;
-                    font-weight: 500;
-                    transition: all 0.3s;">
-                    Filmleri Görüntüle
-                </a>
+<div style="background-color: #fff; padding: 40px 0;">
+    <div style="max-width: 900px; margin: 0 auto;">
+        <h2 style="color: #1c1c1c; margin-bottom: 30px; font-size: 2.2rem;">Nasıl Çalışır?</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; color: #1c1c1c;">
+            <div style="background: #FFD700; border-radius: 10px; padding: 25px;">
+                <i class="fas fa-search" style="font-size: 2.2rem; color: #1c1c1c; margin-bottom: 15px;"></i>
+                <h4 style="margin-bottom: 10px;">1. Film Seçin</h4>
+                <p>Geniş film kataloğumuzdan istediğiniz filmi seçin.</p>
             </div>
-
-            @if (User.IsInRole("admin"))
-            {
-                <div style="background-color: #1c1c1c; padding: 30px; border-radius: 10px; text-align: center; transition: transform 0.3s;">
-                    <i class="fas fa-calendar-alt" style="font-size: 2.5rem; color: #FFD700; margin-bottom: 15px;"></i>
-                    <h3 style="color: #FFD700; margin-bottom: 10px;">Film Randevuları</h3>
-                    <p style="color: #fff; margin-bottom: 20px;">Tüm randevuları yönetin ve takip edin.</p>
-                    <a href="@Url.Action("Index", "Appointment")" style="
-                        display: inline-block;
-                        background-color: #FFD700;
-                        color: #1c1c1c;
-                        padding: 10px 20px;
-                        border-radius: 5px;
-                        text-decoration: none;
-                        font-weight: 500;
-                        transition: all 0.3s;">
-                        Randevuları Yönet
-                    </a>
-                </div>
-            }
-        </div>
-
-        <div style="background-color: #1c1c1c; padding: 30px; border-radius: 10px; margin-top: 20px;">
-            <h2 style="color: #FFD700; margin-bottom: 20px;">Nasıl Çalışır?</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; color: #fff;">
-                <div>
-                    <i class="fas fa-search" style="font-size: 2rem; color: #FFD700; margin-bottom: 15px;"></i>
-                    <h4 style="color: #FFD700; margin-bottom: 10px;">1. Film Seçin</h4>
-                    <p>Geniş film kataloğumuzdan istediğiniz filmi seçin.</p>
-                </div>
-                <div>
-                    <i class="fas fa-calendar-plus" style="font-size: 2rem; color: #FFD700; margin-bottom: 15px;"></i>
-                    <h4 style="color: #FFD700; margin-bottom: 10px;">2. Randevu Alın</h4>
-                    <p>Size uygun bir tarih ve saat seçerek randevunuzu oluşturun.</p>
-                </div>
-                <div>
-                    <i class="fas fa-film" style="font-size: 2rem; color: #FFD700; margin-bottom: 15px;"></i>
-                    <h4 style="color: #FFD700; margin-bottom: 10px;">3. Filmi İzleyin</h4>
-                    <p>Randevu saatinizde filminizi keyifle izleyin.</p>
-                </div>
+            <div style="background: #FFD700; border-radius: 10px; padding: 25px;">
+                <i class="fas fa-calendar-plus" style="font-size: 2.2rem; color: #1c1c1c; margin-bottom: 15px;"></i>
+                <h4 style="margin-bottom: 10px;">2. Randevu Alın</h4>
+                <p>Size uygun bir tarih ve saat seçerek randevunuzu oluşturun.</p>
+            </div>
+            <div style="background: #FFD700; border-radius: 10px; padding: 25px;">
+                <i class="fas fa-film" style="font-size: 2.2rem; color: #1c1c1c; margin-bottom: 15px;"></i>
+                <h4 style="margin-bottom: 10px;">3. Filmi İzleyin</h4>
+                <p>Randevu saatinizde filminizi keyifle izleyin.</p>
             </div>
         </div>
     </div>
@@ -78,23 +82,9 @@
     <script>
         $(document).ready(function() {
             // Card hover effect
-            $('[style*="background-color: #1c1c1c"]').hover(
-                function() { 
-                    $(this).css('transform', 'translateY(-5px)');
-                },
-                function() { 
-                    $(this).css('transform', 'translateY(0)');
-                }
-            );
-
-            // Button hover effect
-            $('a[style*="background-color: #FFD700"]').hover(
-                function() { 
-                    $(this).css('opacity', '0.8');
-                },
-                function() { 
-                    $(this).css('opacity', '1');
-                }
+            $('[style*="background-color: #FFD700"]').hover(
+                function() { $(this).css('transform', 'translateY(-5px) scale(1.03)'); },
+                function() { $(this).css('transform', 'translateY(0) scale(1)'); }
             );
         });
     </script>

@@ -86,7 +86,7 @@ namespace FilmOnerme.Controllers
                 _logger.LogInformation("Film ekleme işlemi başlatıldı");
                 
                 if (!ModelState.IsValid)
-                {
+            {
                     _logger.LogWarning("Model doğrulama hataları:");
                     foreach (var modelState in ModelState.Values)
                     {
@@ -114,7 +114,7 @@ namespace FilmOnerme.Controllers
             {
                 _logger.LogError($"Film eklenirken hata oluştu: {ex.Message}");
                 ModelState.AddModelError(string.Empty, $"Film eklenirken bir hata oluştu: {ex.Message}");
-                return View(film);
+            return View(film);
             }
         }
 
